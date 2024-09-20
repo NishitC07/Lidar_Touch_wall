@@ -11,11 +11,6 @@ import numpy as np
 import time 
 
 
-Lidar_Distance_X = 0
-Lidar_Distance_Y = 0
-F_Width = 0
-F_Height = 0
-
 pi = 22/7
 
 monitor = get_monitors()
@@ -178,7 +173,7 @@ def main():
 
                            flag = False
                            ms.release()
-                           ms.move(X,Y,duration=0.00000000000000000000000000000000000000000000000000000000000000001)\
+                           ms.move(X,Y,duration=0.00000000000000000000000000000000000000000000000000000000000000001)
                             
                            ms.click()
                            
