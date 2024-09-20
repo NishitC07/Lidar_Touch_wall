@@ -195,21 +195,5 @@ def main():
                             break
             if Flag3:
                 break           
-                 
-                                    
-
-                            
-
-
-            
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     main()
