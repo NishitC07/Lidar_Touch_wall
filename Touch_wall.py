@@ -1,4 +1,4 @@
-# You can directly use this code when your lidar is on (0,0) coordinate of screen
+# You can directly use this code when your lidar is on (0,0)(at upper left corner) coordinate of screen
 
 
 import serial
@@ -19,7 +19,6 @@ primary = monitor[0]
 w = primary.width
 h = primary.height
 
-print(f"wid {w} hei {h}")
 
 ai_w = int(input("Enter Width"))
 ai_h = int(input("Enter Heigth"))
@@ -29,12 +28,10 @@ y_pf = ai_h/h
 
 dignl = np.sqrt(((ai_w)**2)+((ai_h)**2))
 dignl = int(dignl) 
-print(f'dignl is {dignl}')
 
 max_angr = math.acos(((w * x_pf)/dignl)) 
 max_ang = max_angr * (180/pi)
 
-print(f'The max angle is {max_ang}')
 
 
 def map_angle_to_value(angle):
@@ -159,7 +156,6 @@ def main():
 
                           
                           if 0 < distance < value : 
-                           print(f'the distance is {distance}')
                         
                         
                            angle_r = math.radians(angle)    

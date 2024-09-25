@@ -38,24 +38,21 @@ primary = monitor[0]
 w = primary.width
 h = primary.height
 
-print(f"wid {w} hei {h}")
+
 
 ai_w = int(UR_x - orgi_x)
 ai_h = int(BL_y - orgi_y)
 
-print(f"Width of AI:{ai_w}, Height of AI:{ai_h}")
 
 x_pf = ai_w/w
 y_pf = ai_h/h
 
 dignl = np.sqrt(((UR_x)**2)+((BL_y)**2))
 dignl = int(dignl) 
-print(f'dignl is {dignl}')
 
 max_angr = math.acos(((w * x_pf)/dignl)) 
 max_ang = max_angr * (180/pi)
 
-print(f'The max angle is {max_ang}')
 
 
 def map_angle_to_value(angle):
@@ -179,9 +176,7 @@ def main():
 
                           
                           if 0 < distance < value : 
-                           print(f'the distance is {distance}')
-                           print(f'The angle is {angle}')
-                           print(f"The value is {value}")                         
+                                           
                         
                            angle_r = math.radians(angle)    
 

@@ -12,14 +12,39 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 import os
 from screeninfo import get_monitors
+import tkinter as tk
+from tkinter import messagebox,simpledialog
 
-max_width = int(input("Enter Maximum width range for lidar "))
-max_height = int(input("Enter Maximum height range for lidar "))
+
+
+
+
+def get_user_input():
+    global max_width, max_height
+
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
+
+    # Get max width
+    max_width = simpledialog.askinteger("Input", "Enter Maximum width range for lidar:", minvalue=1)
+    if max_width is None:
+        sys.exit("Input canceled.")
+    
+    # Get max height
+    max_height = simpledialog.askinteger("Input", "Enter Maximum height range for lidar:", minvalue=1)
+    if max_height is None:
+        sys.exit("Input canceled.")
+    
+    root.destroy()  # Close the dialog
 
 
 xlis = []
 ylis = []
 
+get_user_input()
+
+
+   
 def map_angle_to_value(angle):
     # Check if the angle is within the valid range
     if angle < 0 or angle > 90 :
@@ -101,12 +126,12 @@ def countdown(seconds):
         while seconds:
             mins, secs = divmod(seconds, 60)
             timer = f'{mins:02}:{secs:02}'
-            print(f'\r{timer}')
+            # print(f'\r{timer}')
             sys.stdout.flush()
             time.sleep(1)
             seconds -= 1
         Flag = True
-        print('\r00:00\n')
+        # print('\r00:00\n')
     except KeyboardInterrupt:
         print("\nCountdown interrupted.")
 
@@ -119,13 +144,12 @@ def main():
     bytes_to_read_after_header = 47
 
     with ThreadPoolExecutor() as Exp:
-        result = Exp.submit(countdown,10)
-        result2 = Exp.submit(countdown,15)
-        result3 = Exp.submit(countdown,25)
+        messagebox.showinfo("Information", "Please, Hold On Upper left Corner")
+        result = Exp.submit(countdown,7)
+
         while True:
             Flag = False
-            Flag2 = False
-            Flag3 = False
+           
             if ser.in_waiting > 0:
                 data = ser.read(ser.in_waiting)
                 frames = extract_frames(data, header, bytes_to_read_after_header)
@@ -145,55 +169,132 @@ def main():
                                 angle_r = math.radians(angle)    
                                 x_dis = distance * math.cos(angle_r)
                                 y_dis = distance * math.sin(angle_r)
+                                
                                 if x_dis == 0.0:
                                     continue
 
                                
                                 if result.done():
-                                    Flag = result.result()
+                                  Flag = result.result()
                                     
-                                if Flag == True and len(xlis) == 0:
-                                    Flag = False
+                                  if Flag == True and len(xlis) == 0:
+                                    
                                     xlis.append(x_dis)
                                     ylis.append(y_dis)
 
                                     data = {"org_x":x_dis,
                                             "org_y":y_dis}
                                     write_data_to_file(data, "data.json")
-                                        
 
-                                if result2.done():
+                            if Flag:
+                                break
+                    if Flag:
+                        break
+            if Flag:
+                break      
 
-                                     
-                                    Flag2 = result2.result()
+    with ThreadPoolExecutor() as Exp:
+        messagebox.showinfo("Information", "Please, Hold On Bottom left Corner")
+        result = Exp.submit(countdown,7)
+
+        while True:
+            Flag = False
+           
+            if ser.in_waiting > 0:
+                data = ser.read(ser.in_waiting)
+                frames = extract_frames(data, header, bytes_to_read_after_header)
+
+                for frame in frames:
+                    
+                    if len(frame) == 47:
+                        hex_frame = ' '.join(f"{byte:02X}" for byte in frame)
+                        distances, angles = parse_lidar_data(bytes.fromhex(hex_frame))
+                        
+                        for distance, angle in zip(distances, angles):
+                            distance = int(distance)
+                            value = map_angle_to_value(angle)
+                            if 1 < angle < 89 and distance < value:
+                                
+
+                                angle_r = math.radians(angle)    
+                                x_dis = distance * math.cos(angle_r)
+                                y_dis = distance * math.sin(angle_r)
+                                
+                                if x_dis == 0.0:
+                                    continue
+
+                               
+                                if result.done():
+                                  Flag = result.result()
                                     
-                                if Flag2 == True and len(xlis) == 1:
-                                    Flag = False
+                                  if Flag == True and len(xlis) == 1:
+                                    
                                     xlis.append(x_dis)
                                     ylis.append(y_dis)
 
                                     data = {"Bottom_Left_x":x_dis,
                                             "Bottom_Left_y":y_dis}
                                     write_data_to_file(data, "data.json")
-                                        
-  
+                            
+                            if Flag:
+                                break
+                    if Flag:
+                        break
+            if Flag:
+                break     
 
-                                if result3.done():
-                                    Flag3 = result3.result()
+
+    with ThreadPoolExecutor() as Exp:
+        messagebox.showinfo("Information", "Please, Hold On Upper Right Corner")
+        result = Exp.submit(countdown,7)
+
+        while True:
+            Flag = False
+           
+            if ser.in_waiting > 0:
+                data = ser.read(ser.in_waiting)
+                frames = extract_frames(data, header, bytes_to_read_after_header)
+
+                for frame in frames:
+                    
+                    if len(frame) == 47:
+                        hex_frame = ' '.join(f"{byte:02X}" for byte in frame)
+                        distances, angles = parse_lidar_data(bytes.fromhex(hex_frame))
+                        
+                        for distance, angle in zip(distances, angles):
+                            distance = int(distance)
+                            value = map_angle_to_value(angle)
+                            if 1 < angle < 89 and distance < value:
+                                
+
+                                angle_r = math.radians(angle)    
+                                x_dis = distance * math.cos(angle_r)
+                                y_dis = distance * math.sin(angle_r)
+                                
+                                if x_dis == 0.0:
+                                    continue
+
+                               
+                                if result.done():
+                                  Flag = result.result()
                                     
-                                if Flag3 == True and len(xlis) == 2:
-                                    # print(Flag)
+                                  if Flag == True and len(xlis) == 2:
+                                    
                                     xlis.append(x_dis)
                                     ylis.append(y_dis)
-   
+
                                     data = {"upper_right_x":x_dis,
                                             "upper_right_y":y_dis}
                                     write_data_to_file(data, "data.json")
-                                    break
+                            
+                            if Flag:
+                                break
+                    if Flag:
+                        break
+            if Flag:
+                break             
+    messagebox.showinfo("Success", "Values Stored Successfully")
+    
 
-                        if Flag3:
-                            break
-            if Flag3:
-                break           
 if __name__ == "__main__":
     main()
